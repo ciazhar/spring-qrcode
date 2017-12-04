@@ -32,7 +32,7 @@ public class ImageServiceImpl implements ImageService {
 
     private static final Logger LOGGER = getLogger(ImageServiceImpl.class);
 
-    public byte[] generateQRCode(String text, int width, int height) throws WriterException, IOException {
+    private byte[] generateQRCode(String text, int width, int height) throws WriterException, IOException {
 
         Assert.hasText(text);
         Assert.isTrue(width > 0);
@@ -51,6 +51,7 @@ public class ImageServiceImpl implements ImageService {
         return new AsyncResult<>(generateQRCode(text, width, height));
     }
 
+    @Override
     @CacheEvict(cacheNames = "qr-code-cache", allEntries = true)
     public void purgeCache() {
         LOGGER.info("Purging cache");
