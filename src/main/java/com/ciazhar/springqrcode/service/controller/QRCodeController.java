@@ -4,7 +4,6 @@ import com.ciazhar.springqrcode.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +21,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RestController
 @RequestMapping("/qrcode")
 @CrossOrigin(methods = {GET, DELETE})
-@EnableScheduling
 public class QRCodeController {
 
-    private final int QRCODE_WIDTH = 256;
-    private final int QRCODE_HEIGHT = 256;
-    public static final long THIRTY_MINUTES = 1800000;
+    private static final long THIRTY_MINUTES = 1800000;
     private final ImageService service;
 
     @Autowired
@@ -38,8 +34,10 @@ public class QRCodeController {
     @GetMapping(produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getQRCode(@RequestParam String text){
         try {
+            int QRCODE_WIDTH = 256;
+            int QRCODE_HEIGHT = 256;
             return ok().cacheControl(maxAge(30, MINUTES))
-                    .body(service.generateQRCodeAsync(text,QRCODE_WIDTH,QRCODE_HEIGHT).get());
+                    .body(service.generateQRCodeAsync(text, QRCODE_WIDTH, QRCODE_HEIGHT).get());
         } catch (Exception e) {
             throw new RuntimeException("Error while generating QR code images.",e);
         }
